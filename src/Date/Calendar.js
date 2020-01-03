@@ -17,6 +17,7 @@ export default class Calendar extends Component {
       calenderMonth: date.getMonth() + 1 
     };
     this._renderPanel = this._renderPanel.bind(this);
+    this._renderWeekCalendar = this._renderWeekCalendar.bind(this);
     this._changePanel = this._changePanel.bind(this);
   }
 
@@ -42,6 +43,25 @@ export default class Calendar extends Component {
     }
   }
 
+  _renderWeekCalendar() {
+    return (
+      <div className='calendar_content'>
+        {this._renderWeekName()}
+      </div>
+    );
+  }
+
+  _renderWeekName() {
+    const weekNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return (
+      <div className='calendar_line'>
+        {
+          weekNames.map(weekName => <div className='calendar_week-name'>{weekName}</div>)
+        }
+      </div>
+    );
+  }
+
   _changePanel() {
     const { panel } = this.state;
     this.setState({
@@ -50,6 +70,7 @@ export default class Calendar extends Component {
   }
 
   render() {
+    const { panel } = this.state;
     return (
       <div className='calendar_container'>
         <div className='calendar_head'>
@@ -61,6 +82,7 @@ export default class Calendar extends Component {
             rotation={180}
           />
         </div>
+        {panel === 'day' && this._renderWeekCalendar()}
       </div>
     );
   }

@@ -31,4 +31,28 @@
       background-color: #eee;
     }
   }
+
+  &_content {
+    width: 100%;
+    background-color: $white;
+    padding: {
+      bottom: 8px;
+    };
+  }
+
+  &_line {
+    width: 100%;
+    height: 30px;
+    display: flex;
+  }
+
+  &_week-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    color: blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
