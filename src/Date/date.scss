@@ -10,4 +10,25 @@
       bottom: 6px;
     };
   }
+
+  &_head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  &_panel {
+    font-size: 15px;
+    font-weight: 15px;
+    letter-spacing: 1px;
+    color: $black;
+    padding: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #eee;
+    }
+  }
 }

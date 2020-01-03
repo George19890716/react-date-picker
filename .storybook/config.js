@@ -30,8 +30,9 @@ addDecorator(withIntl);
 
 
 function loadStories() {
-  require('./stories/form-controls');
   require('./stories/icon-controls');
+  require('./stories/date-controls');
+  require('./stories/form-controls');
 }
 
 configure(loadStories, module);
