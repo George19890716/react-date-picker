@@ -3,7 +3,7 @@ export function getNumberOfDaysInMonth(year, month) {
 }
 
 export function getNameOfFirstWeekDayInMonth(year, month) {
-  return new Date(year, month, 1).getDay();
+  return new Date(year, month - 1, 1).getDay();
 }
 
 export function getNumberOfWeeksInMonth(firstDayInMonth, daysInMonth) {

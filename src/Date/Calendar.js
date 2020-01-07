@@ -22,6 +22,7 @@ export default class Calendar extends Component {
     this._renderWeekCalendar = this._renderWeekCalendar.bind(this);
     this._renderWeeks = this._renderWeeks.bind(this);
     this._changePanel = this._changePanel.bind(this);
+    this._clcikArrow = this._clcikArrow.bind(this);
   }
 
   _renderPanel() {
@@ -68,8 +69,8 @@ export default class Calendar extends Component {
 
   _renderWeeks() {
     const { year, month } = this.state;
-    const firstDayInMonth = getNameOfFirstWeekDayInMonth(year, month - 1);
-    const daysInMonth = getNumberOfDaysInMonth(year, month - 1);
+    const firstDayInMonth = getNameOfFirstWeekDayInMonth(year, month);
+    const daysInMonth = getNumberOfDaysInMonth(year, month);
     const weeks = getNumberOfWeeksInMonth(firstDayInMonth, daysInMonth);
 
     return weeks.map((week, index) => this._renderWeek(firstDayInMonth, daysInMonth, week, index));
@@ -106,18 +107,49 @@ export default class Calendar extends Component {
     });
   }
 
-  render() {
+  _clcikArrow(year, month, direction) {
     const { panel } = this.state;
+    switch(panel) {
+      case 'year':
+      case 'month':
+      default: 
+        if (month === 1 && direction === -1) {
+          month = 12;
+          year--;
+        } else if (month === 12 && direction === 1) {
+          month = 0;
+          year++;
+        } else {
+          month = month + direction;
+        }
+        this.setState({
+          year,
+          month
+        });
+    }
+  }
+
+  render() {
+    const { year, month, panel } = this.state;
     return (
       <div className='calendar_container'>
         <div className='calendar_head'>
-          <Arrow />
+          <div className='calendar_arrow-box'>
+            <Arrow
+              width={18}
+              onClick={() => this._clcikArrow(year, month, -1)}
+            />
+          </div>
           <div className='calendar_panel' onClick={this._changePanel}>
             {this._renderPanel()}
           </div>
-          <Arrow
-            rotation={180}
-          />
+          <div className='calendar_arrow-box'>
+            <Arrow
+              rotation={180}
+              width={18}
+              onClick={() => this._clcikArrow(year, month, 1)}
+            />
+          </div>
         </div>
         {panel === 'day' && this._renderWeekCalendar()}
       </div>

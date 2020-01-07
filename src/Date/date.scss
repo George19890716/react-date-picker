@@ -19,6 +19,20 @@
     font-size: 13px;
   }
 
+  &_arrow-box {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: $grey-shadow;
+      
+    }
+  }
+
   &_panel {
     font-size: 15px;
     font-weight: 15px;
@@ -28,7 +42,8 @@
     cursor: pointer;
 
     &:hover {
-      background-color: #eee;
+      box-shadow: $grey-shadow;
+      border-radius: 4px;
     }
   }
 
