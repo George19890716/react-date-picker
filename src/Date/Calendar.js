@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { FormattedDate } from 'react-intl';
 import PropTypes from 'prop-types';
 import Arrow from '../Icon/Arrow';
-import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth } from '../utils/Date';
+import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth, getNumberOfWeeksInMonth, getWeekDays } from '../utils/Date';
 import './date.scss';
 
 export default class Calendar extends Component {
@@ -20,6 +20,7 @@ export default class Calendar extends Component {
     };
     this._renderPanel = this._renderPanel.bind(this);
     this._renderWeekCalendar = this._renderWeekCalendar.bind(this);
+    this._renderWeeks = this._renderWeeks.bind(this);
     this._changePanel = this._changePanel.bind(this);
   }
 
@@ -49,7 +50,7 @@ export default class Calendar extends Component {
     return (
       <div className='calendar_content'>
         {this._renderWeekName()}
-        {this._renderWeek()}
+        {this._renderWeeks()}
       </div>
     );
   }
@@ -59,20 +60,26 @@ export default class Calendar extends Component {
     return (
       <div className='calendar_line'>
         {
-          weekNames.map(weekName => <div className='calendar_week-name'>{weekName}</div>)
+          weekNames.map((weekName, index) => <div key={index} className='calendar_week-name'>{weekName}</div>)
         }
       </div>
     );
   }
 
-  _renderWeek() {
-    const week = [1, 2, 3, 4, 5, 6, 7];
+  _renderWeeks() {
+    const { year, month } = this.state;
+    const firstDayInMonth = getNameOfFirstWeekDayInMonth(year, month - 1);
+    const daysInMonth = getNumberOfDaysInMonth(year, month - 1);
+    const weeks = getNumberOfWeeksInMonth(firstDayInMonth, daysInMonth);
 
+    return weeks.map((week, index) => this._renderWeek(firstDayInMonth, daysInMonth, week, index));
+  }
+
+  _renderWeek(firstDayInMonth, daysInMonth, week, index) {
+    const weekdays = getWeekDays(firstDayInMonth, daysInMonth, week);
     return (
-      <div className='calendar_line'>
-        {
-          week.map(this._renderWeekDay)
-        }
+      <div key={index} className='calendar_line'>
+        {weekdays.map(this._renderWeekDay)}
       </div>
     );
   }
