@@ -50,9 +50,41 @@
     flex: 1;
     font-size: 13px;
     font-weight: 700;
-    color: blue;
+    color: $theme;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &_week-day-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &_week-day {
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    letter-spacing: normal;
+    color: $grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      border-radius: 50%;
+      background-color: rgba($theme, 0.2);
+    }
+  }
+
+  &_weekend-day {
+    color: rgba($theme, 0.9);
   }
 }

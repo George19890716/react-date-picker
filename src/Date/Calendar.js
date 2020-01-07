@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
+import classNames from 'classnames';
 import { FormattedDate } from 'react-intl';
 import PropTypes from 'prop-types';
 import Arrow from '../Icon/Arrow';
+import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth } from '../utils/Date';
 import './date.scss';
 
 export default class Calendar extends Component {
@@ -47,6 +49,7 @@ export default class Calendar extends Component {
     return (
       <div className='calendar_content'>
         {this._renderWeekName()}
+        {this._renderWeek()}
       </div>
     );
   }
@@ -58,6 +61,33 @@ export default class Calendar extends Component {
         {
           weekNames.map(weekName => <div className='calendar_week-name'>{weekName}</div>)
         }
+      </div>
+    );
+  }
+
+  _renderWeek() {
+    const week = [1, 2, 3, 4, 5, 6, 7];
+
+    return (
+      <div className='calendar_line'>
+        {
+          week.map(this._renderWeekDay)
+        }
+      </div>
+    );
+  }
+
+  _renderWeekDay(day, index) {
+    const className = classNames('calendar_week-day', {'calendar_weekend-day': index === 0 || index === 6});
+    return (
+      <div key={index} className='calendar_week-day-box'>
+        {day !== 0 && (
+          <span 
+            className={className}
+          >
+            {day}
+          </span>
+        )}
       </div>
     );
   }
