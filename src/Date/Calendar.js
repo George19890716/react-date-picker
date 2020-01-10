@@ -1,28 +1,49 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedDate } from 'react-intl';
-import PropTypes from 'prop-types';
 import Arrow from '../Icon/Arrow';
 import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth, getNumberOfWeeksInMonth, getWeekDays } from '../utils/Date';
 import './date.scss';
 
 export default class Calendar extends Component {
+  static propTypes = {
+    calenderDate: PropTypes.object,
+    clickDay: PropTypes.func
+  }
+
+  static defaultProps = {
+    calenderDate: new Date(),
+    clickDay: null
+  }
+
   constructor(props) {
     super(props);
-    const date = this.props.calenderDate || new Date();
     this.state = {
       panel: 'day',
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
-      calendarYear: date.getFullYear(),
-      calenderMonth: date.getMonth() + 1 
+      year: 2020,
+      month: 1,
+      day: 1,
+      calendarYear: 2020,
+      calenderMonth: 1
     };
     this._renderPanel = this._renderPanel.bind(this);
     this._renderWeekCalendar = this._renderWeekCalendar.bind(this);
     this._renderWeeks = this._renderWeeks.bind(this);
+    this._renderWeekDay = this._renderWeekDay.bind(this);
+    this._setDate = this._setDate.bind(this);
     this._changePanel = this._changePanel.bind(this);
     this._clcikArrow = this._clcikArrow.bind(this);
+  }
+
+  componentDidMount() {
+    const date = this.props.calenderDate || new Date();
+    this._setDate(date);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const date = nextProps.calenderDate || new Date();
+    this._setDate(date);
   }
 
   _renderPanel() {
@@ -86,18 +107,34 @@ export default class Calendar extends Component {
   }
 
   _renderWeekDay(day, index) {
-    const className = classNames('calendar_week-day', {'calendar_weekend-day': index === 0 || index === 6});
+    const { day: calendarDay, month, year, calendarYear, calenderMonth } = this.state;
+    const selected = calendarDay === day && calenderMonth === month && calendarYear === year;
+    const className = classNames('calendar_week-day', {
+      'calendar_weekend-day': index === 0 || index === 6,
+      'calendar_week-day-selected': selected
+    });
     return (
       <div key={index} className='calendar_week-day-box'>
         {day !== 0 && (
           <span 
             className={className}
+            onClick={() => this.props.clickDay(new Date(year, month - 1, day))}
           >
             {day}
           </span>
         )}
       </div>
     );
+  }
+
+  _setDate(date) {
+    this.setState({
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+      calendarYear: date.getFullYear(),
+      calenderMonth: date.getMonth() + 1 
+    });
   }
 
   _changePanel() {

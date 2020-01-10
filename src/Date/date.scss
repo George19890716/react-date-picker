@@ -22,6 +22,7 @@
   &_arrow-box {
     width: 22px;
     height: 22px;
+    border-radius: 2px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,6 +30,7 @@
 
     &:hover {
       box-shadow: $grey-shadow;
+      background-color: rgba($white, 0.2);
       
     }
   }
@@ -79,8 +81,8 @@
   }
 
   &_week-day {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     box-sizing: border-box;
     font-size: 13px;
     font-weight: 500;
@@ -96,6 +98,16 @@
     &:hover {
       border-radius: 50%;
       background-color: rgba($theme, 0.2);
+    }
+  }
+
+  &_week-day-selected {
+    border-radius: 50%;
+    background-color: $theme;
+    color: $white;
+
+    &:hover {
+      background-color: $theme;
     }
   }
 
