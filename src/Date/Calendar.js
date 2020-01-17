@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedDate } from 'react-intl';
 import Arrow from '../Icon/Arrow';
-import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth, getNumberOfWeeksInMonth, getWeekDays } from '../utils/Date';
+import { getNumberOfDaysInMonth, getNameOfFirstWeekDayInMonth, getNumberOfWeeksInMonth, getWeekDays, getYears } from '../utils/Date';
 import './date.scss';
 
 export default class Calendar extends Component {
+  static months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
   static propTypes = {
     calenderDate: PropTypes.object,
+    // calenderDate: PropTypes.number,
     clickDay: PropTypes.func
   }
 
   static defaultProps = {
     calenderDate: new Date(),
+    // calenderDate: 0,
     clickDay: null
   }
 
@@ -24,25 +28,33 @@ export default class Calendar extends Component {
       year: 2020,
       month: 1,
       day: 1,
-      calendarYear: 2020,
-      calenderMonth: 1
+      calenderYear: 2020,
+      calenderMonth: 1,
+      years: []
     };
     this._renderPanel = this._renderPanel.bind(this);
     this._renderWeekCalendar = this._renderWeekCalendar.bind(this);
     this._renderWeeks = this._renderWeeks.bind(this);
     this._renderWeekDay = this._renderWeekDay.bind(this);
+    this._renderMonth = this._renderMonth.bind(this);
+    this._renderWeekCalendar = this._renderYearCalendar.bind(this);
     this._setDate = this._setDate.bind(this);
     this._changePanel = this._changePanel.bind(this);
-    this._clcikArrow = this._clcikArrow.bind(this);
+    this._changeMonth = this._changeMonth.bind(this);
+    this._clickArrow = this._clickArrow.bind(this);
   }
 
   componentDidMount() {
+    const { calenderDate } = this.props;
     const date = this.props.calenderDate || new Date();
+    // const date = calenderDate ? new Date(calenderDate) : new Date();
     this._setDate(date);
   }
 
   componentWillReceiveProps(nextProps) {
-    const date = nextProps.calenderDate || new Date();
+    const { calenderDate } = this.props;
+    const date = this.props.calenderDate || new Date();
+    // const date = calenderDate ? new Date(calenderDate) : new Date();
     this._setDate(date);
   }
 
@@ -66,6 +78,46 @@ export default class Calendar extends Component {
         );
       default: return null;
     }
+  }
+
+  _renderYearCalendar() {
+    const { years } = this.state;
+  }
+
+  _renderMonthCalendar() {
+    const months = Calendar.months;
+    return (
+      <div className='calendar_content calendar_month-content'>
+        <div className='calendar_line'>
+          {months.slice(0, 4).map(this._renderMonth)}
+        </div>
+        <div className='calendar_line'>
+          {months.slice(4, 8).map(this._renderMonth)}
+        </div>
+        <div className='calendar_line'>
+          {months.slice(8).map(this._renderMonth)}
+        </div>
+      </div>
+    );
+  }
+
+  _renderMonth(month, index) {
+    const months = Calendar.months;
+    const { calenderMonth, calenderYear, year } = this.state;
+    const selected = months.indexOf(month) + 1 === calenderMonth && year === calenderYear;
+    return (
+      <div
+        key={index}
+        className='calendar_month-box'
+      >
+        <span
+          className={classNames('calendar_month', {'calendar_month-selected': selected})}
+          onClick={() => this._changeMonth(months.indexOf(month) + 1)}
+        >
+          {month}
+        </span>
+      </div>
+    );
   }
 
   _renderWeekCalendar() {
@@ -107,8 +159,8 @@ export default class Calendar extends Component {
   }
 
   _renderWeekDay(day, index) {
-    const { day: calendarDay, month, year, calendarYear, calenderMonth } = this.state;
-    const selected = calendarDay === day && calenderMonth === month && calendarYear === year;
+    const { day: calendarDay, month, year, calenderYear, calenderMonth } = this.state;
+    const selected = calendarDay === day && calenderMonth === month && calenderYear === year;
     const className = classNames('calendar_week-day', {
       'calendar_weekend-day': index === 0 || index === 6,
       'calendar_week-day-selected': selected
@@ -132,23 +184,40 @@ export default class Calendar extends Component {
       year: date.getFullYear(),
       month: date.getMonth() + 1,
       day: date.getDate(),
-      calendarYear: date.getFullYear(),
+      calenderYear: date.getFullYear(),
       calenderMonth: date.getMonth() + 1 
     });
   }
 
   _changePanel() {
     const { panel } = this.state;
+    if (panel === 'month') {
+      const { year } = this.state;
+      const years = getYears(year);
+      this.setState({years});
+    }
     this.setState({
       panel: panel === 'day' ? 'month' : 'year'
     });
   }
 
-  _clcikArrow(year, month, direction) {
+  _changeMonth(month) {
+    this.setState({
+      panel: 'day',
+      month
+    });
+  }
+
+  _clickArrow(year, month, direction) {
     const { panel } = this.state;
     switch(panel) {
       case 'year':
       case 'month':
+        year = year + direction
+        this.setState({
+          year
+        });
+        break;
       default: 
         if (month === 1 && direction === -1) {
           month = 12;
@@ -163,6 +232,7 @@ export default class Calendar extends Component {
           year,
           month
         });
+        break;
     }
   }
 
@@ -174,7 +244,7 @@ export default class Calendar extends Component {
           <div className='calendar_arrow-box'>
             <Arrow
               width={18}
-              onClick={() => this._clcikArrow(year, month, -1)}
+              onClick={() => this._clickArrow(year, month, -1)}
             />
           </div>
           <div className='calendar_panel' onClick={this._changePanel}>
@@ -184,11 +254,12 @@ export default class Calendar extends Component {
             <Arrow
               rotation={180}
               width={18}
-              onClick={() => this._clcikArrow(year, month, 1)}
+              onClick={() => this._clickArrow(year, month, 1)}
             />
           </div>
         </div>
         {panel === 'day' && this._renderWeekCalendar()}
+        {panel === 'month' && this._renderMonthCalendar()}
       </div>
     );
   }

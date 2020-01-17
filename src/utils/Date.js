@@ -18,3 +18,8 @@ export function getWeekDays(firstDayInMonth, daysInMonth, week) {
     return day;
   });
 }
+
+export function getYears(year) {
+  const startYear = year - year % 16;
+  return [...Array(12).keys()].map(i => startYear + i);
+}
